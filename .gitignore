@@ -1,0 +1,18 @@
+
+
+
+
+
+
+# Notebook
+*.nb
+
+# Model
+*.wxf
+*.wmlf
+*.wlnet
+*.h5
+*.hdf5
+*.t7
+*.pkl
+*.pth
