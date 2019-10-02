@@ -4,8 +4,8 @@
 
 ## Source
 
-https://github.com/pavitrakumar78/Anime-Face-GAN-Keras
+https://github.com/acupoftee/MangaGAN
 
 ```yaml
-download: 9999_GENERATOR_weights_and_arch.hdf5
+download: netG_epoch_67.pth
 ```

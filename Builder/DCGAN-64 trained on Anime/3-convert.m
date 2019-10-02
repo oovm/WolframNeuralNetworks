@@ -42,4 +42,4 @@ mainNet = NetChain[{
 ]
 
 
-Export["DCGAN-64 trained on Anime.WLNet",mainNet]
+Export["DCGAN-64 trained on Anime.WLNet", mainNet]

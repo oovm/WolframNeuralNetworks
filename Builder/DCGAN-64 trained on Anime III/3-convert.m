@@ -4,7 +4,7 @@
 SetDirectory@NotebookDirectory[];
 
 
-raw = Import["netG_epoch_67.wxf"];
+raw = Import["netG_epoch_67.pth.wxf"];
 
 
 leakyReLU[alpha_] := ElementwiseLayer[Ramp[#] - alpha * Ramp[-#]&];
@@ -48,4 +48,4 @@ mainNet = NetChain[{
 ]
 
 
-Export["DCGAN-64 trained on Anime III.WXF", mainNet]
+Export["DCGAN-64 trained on Anime III.WLNet", mainNet]

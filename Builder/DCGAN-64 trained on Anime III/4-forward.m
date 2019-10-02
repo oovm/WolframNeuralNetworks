@@ -1,9 +1,9 @@
 (* ::Package:: *)
 
 SetDirectory@NotebookDirectory[];
-mainNet= Import@"DCGAN-64 trained on Anime III.WXF";
+mainNet= Import@"DCGAN-64 trained on Anime III.WLNet";
 
 
-inBatch=RandomVariate[NormalDistribution[],{25,100}];
+inBatch=RandomVariate[NormalDistribution[],{49,100}];
 outBatch=mainNet[inBatch,TargetDevice->"GPU"];
 outBatch//Multicolumn
