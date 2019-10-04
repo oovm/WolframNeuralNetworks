@@ -1,40 +1,30 @@
 (* ::Package:: *)
 
-(* ::Subchapter:: *)
-(*Import Models*)
+(* ::Subsection:: *)
+(*Resource retrieval*)
+
+
+(* ::Text:: *)
+(*Get the pre-trained net:*)
 
 
 SetDirectory@NotebookDirectory[];
-mainNet = Import@"DCGAN-64 trained on Anime.WLNet";
+mainNet = Import@"DCGAN-64 trained on Anime IV.WLNet"
 
 
-(* ::Subchapter:: *)
-(*Import Models*)
-
-
-inBatch = RandomVariate[NormalDistribution[], {49, 100}];
-outBatch = mainNet[inBatch, TargetDevice -> "GPU"];
-outBatch // Multicolumn
-
-
-(* ::Subchapter:: *)
-(*Upload Models*)
-
-
-CloudExport[
-	mainNet,
-	"WLNet",
-	CloudObject["https://www.wolframcloud.com/obj/822cc5df-ce67-425f-87b0-f5b3bdf38569"],
-	Permissions -> "Public",
-	MetaInformation -> <|"Name" -> "DCGAN-64 trained on Anime", "Date" -> Now|>
-]
-local = LocalCache@CloudObject[
-	"https://www.wolframcloud.com/obj/822cc5df-ce67-425f-87b0-f5b3bdf38569"
-];
-
-
-CloudObjectInformation[CloudObject["https://www.wolframcloud.com/obj/822cc5df-ce67-425f-87b0-f5b3bdf38569"]]
-Import[local, "WLNet"]
-
-
-
+ResourceObject[<|
+	"Name" -> "DCGAN-128 trained on Landscape",
+	"Description" -> "Deep Convolutional Generative Adversarial Networks 64\[Times]64 trained on Anime Dataset",
+	"ResourceType" -> "NeuralNet",
+	"Version" -> "1.1.0",
+	"WolframLanguageVersionRequired" -> "12.0",
+	"ContentElements" -> <|
+	"EvaluationNet" -> File["DCGAN-64 trained on Anime IV.WLNet"],
+	"EvaluationExample"->File["EvaluationExample.nb"]
+	|>,
+	"DefaultContentElement" -> "EvaluationNet",
+	"ByteCount" -> ByteCount@mainNet,
+	"InputDomains" -> {"Numeric"},
+	"Keywords" -> {"GAN", "DCGAN", "Landscape"},
+	"TaskType" -> {"Image Processing"}
+|>]

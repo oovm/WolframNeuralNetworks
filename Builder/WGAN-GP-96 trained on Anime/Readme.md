@@ -1,0 +1,1 @@
+https://github.com/peter0749/WGAN-GP-Anime-with-Auxiliary-Classifier

@@ -5,7 +5,7 @@
 
 
 (* ::ResourceExampleSubtitle::RGBColor[{Rational[1, 3], Rational[1, 3], Rational[1, 3]}]::Italic:: *)
-(*Turn a photo into a Monet-styless*)
+(*Deep Convolutional GAN trained on Anime Dataset*)
 
 
 (* ::Subsection:: *)
@@ -25,7 +25,7 @@ mainNet = Import@"DCGAN-64 trained on Anime IV.WLNet"
 
 
 (* ::Text:: *)
-(*Get the pre-trained net:*)
+(*Defining the evaluate function:*)
 
 
 Options[netEvaluator] = {
@@ -69,34 +69,49 @@ netEvaluator[list_List, OptionsPattern[]] := Module[
 
 
 (* ::Text:: *)
-(*Run the net on a photo:*)
+(*Run the net with random seeds:*)
 
 
-gen=netEvaluator[]
+SeedRandom[42];
+gen = netEvaluator[]
 
 
-(* ::Input:: *)
-(*netEvaluator[gen["Gene"]]*)
+(* ::Text:: *)
+(*Run the net with given seeds:*)
 
 
+netEvaluator[gen["Gene"]]
+
+
+(* ::Text:: *)
+(*Run the net with multi-outputs:*)
+
+
+SeedRandom[42];
 netEvaluator[4] // Dataset
 
 
 (* ::Subsection:: *)
-(*Adapt to any size*)
+(*Options*)
+
+
+(* ::Subsubsection:: *)
+(*MetaInformation*)
 
 
 (* ::Text:: *)
-(*Automatic image resizing can be avoided by replacing the net encoders. First get the net:*)
+(*Return output with only images:*)
 
 
+SeedRandom[42];
 netEvaluator[MetaInformation -> False]
 
 
 (* ::Text:: *)
-(*Get a photo:*)
+(*Display generated images:*)
 
 
+SeedRandom[42];
 netEvaluator[49, MetaInformation -> False] // Multicolumn
 
 
@@ -130,6 +145,10 @@ NetInformation[mainNet, "LayerTypeCounts"] // Dataset
 
 
 NetInformation[mainNet, "SummaryGraphic"]
+
+
+(* ::Text:: *)
+(*Display the node graph:*)
 
 
 NetInformation[mainNet, "MXNetNodeGraphPlot"]
