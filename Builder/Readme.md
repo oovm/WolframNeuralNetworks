@@ -1,7 +1,7 @@
 ## In progress
 
 
-https://github.com/CryoliteZ/Anime-Face-ACGAN
+
 https://github.com/peter0749/WGAN-GP-Anime-with-Auxiliary-Classifier
 https://github.com/lzw-all-in/anime_person_translation
 
