@@ -11,8 +11,8 @@ getEB[name_] := EmbeddingLayer[
 		<> ToString[name] <> "/embedding_"
 		<> ToString[name] <> "/embeddings:0"
 	]
-]
-getCN[name_, s_, p_] := DeconvolutionLayer[
+];
+getCN[name_, s_, p_] := ConvolutionLayer[
 	"Weights" -> $NCHW@params[
 		"/model_weights/sequential_1/conv2d_"
 			<> ToString[name]
@@ -25,7 +25,7 @@ getCN[name_, s_, p_] := DeconvolutionLayer[
 	],
 	"Stride" -> s,
 	"PaddingSize" -> p
-]
+];
 getDN[name_, s_, p_] := DeconvolutionLayer[
 	"Weights" -> $NCHW@params[
 		"/model_weights/sequential_1/conv2d_transpose_"
@@ -39,7 +39,7 @@ getDN[name_, s_, p_] := DeconvolutionLayer[
 	],
 	"Stride" -> s,
 	"PaddingSize" -> p
-]
+];
 getBN[i_] := BatchNormalizationLayer[
 	"Biases" -> params[
 		"/model_weights/sequential_1/batch_normalization_"
@@ -63,7 +63,7 @@ getBN[i_] := BatchNormalizationLayer[
 	],
 	"Epsilon" -> 0.001,
 	"Momentum" -> 0.5
-]
+];
 
 
 body = NetChain[{
@@ -86,38 +86,37 @@ mainNet = NetGraph[
 	{
 		NetPort["Hair"] -> "HairColor",
 		NetPort["Eye"] -> "EyeColor",
-		{NetPort["Input"], "HairColor", "EyeColor"} -> "Merge",
+		{NetPort["Gene"], "HairColor", "EyeColor"} -> "Merge",
 		"Merge" -> "Generator" -> NetPort["Output"]
 	},
-	"Input" -> 100,
+	"Gene" -> 100,
+	"Hair" -> NetEncoder[{"Class", {"Orange", "White", "Aqua", "Gray", "Green", "Red", "Purple", "Pink", "Blue", "Black", "Brown", "Blonde"}}],
+	"Eye" -> NetEncoder[{"Class", {"Gray", "Black", "Orange", "Pink", "Yellow", "Aqua", "Purple", "Green", "Brown", "Red", "Blue"}}],
 	"Output" -> "Image"
 ]
 
 
 mainNet[
 	<|
-		"Input" -> RandomVariate[NormalDistribution[], 100],
-		"Hair" -> 11,
-		"Eye" -> 1
+		"Gene" -> RandomVariate[NormalDistribution[0, 1 / 1], 100],
+		"Hair" -> "Black",
+		"Eye" -> "Red"
 	|>,
 	TargetDevice -> "GPU"
 ]
 
 
-(* ::Input:: *)
-(**)
-
-
-body = NetChain[{
-	ReshapeLayer[{116, 1, 1}],
-	{getDN[1, 1, 0], getBN[1], leakyReLU[0.2]},
-	{getDN[2, 2, 0], getBN[2], leakyReLU[0.2]},
-	{getDN[3, 2, 0], getBN[3], leakyReLU[0.2]},
-	{getDN[4, 2, 0], getBN[4], leakyReLU[0.2]},
-	{getCN[1, 1, 0], getBN[5], leakyReLU[0.2]},
-	getDN[5, 2, 0],
-	ElementwiseLayer[(Tanh[#] + 1) / 2&]
-}]
-NetDecoder["Image"][
-	body[RandomVariate[NormalDistribution[0, 1], 116]]
-]
+(* ::Text:: *)
+(*body = NetChain[{*)
+(*    	ReshapeLayer[{116, 1, 1}],*)
+(*    	{getDN[1, 1, 0], getBN[1], leakyReLU[0.2]},*)
+(*    	{getDN[2, 2, 0], getBN[2], leakyReLU[0.2]},*)
+(*    	{getDN[3, 2, 0], getBN[3], leakyReLU[0.2]},*)
+(*    	{getDN[4, 2, 0], getBN[4], leakyReLU[0.2]},*)
+(*    	{getCN[1, 1, 0], getBN[5], leakyReLU[0.2]},*)
+(*    	getDN[5, 2, 1],*)
+(*    	ElementwiseLayer[(Tanh[#] + 1) / 2 &]*)
+(*    }];*)
+(*NetDecoder["Image"][*)
+(* 	body[RandomVariate[NormalDistribution[0, 1], 116]]*)
+(* ]*)
