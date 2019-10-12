@@ -96,14 +96,7 @@ mainNet = NetGraph[
 ]
 
 
-mainNet[
-	<|
-		"Gene" -> RandomVariate[NormalDistribution[0, 1 / 1], 100],
-		"Hair" -> "Black",
-		"Eye" -> "Red"
-	|>,
-	TargetDevice -> "GPU"
-]
+Export["ACGAN-64 trained on Anime.WLNet",mainNet]
 
 
 (* ::Text:: *)
