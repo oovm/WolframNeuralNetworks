@@ -59,7 +59,7 @@ Options[evaluator] = {
 	MetaInformation -> True,
 	TargetDevice -> "GPU"
 };
-evaluator[NetModel] := $LoadNets;
+evaluator[NetModel] := AssociationThread[Keys[$LoadNets] -> Values[$LoadNets]];
 evaluator[o : OptionsPattern[]] := First@evaluator[1, o];
 evaluator[n_Integer, o : OptionsPattern[]] := Module[
 	{data},
@@ -67,7 +67,7 @@ evaluator[n_Integer, o : OptionsPattern[]] := Module[
 	data = RandomVariate[NormalDistribution[], {n, 100}];
 	evaluator[<|"Gene" -> #|>& /@ data, o]
 ];
-evaluator[n_NumericArray, o : OptionsPattern[]] := evaluator[<|"Gene" -> n|>,o];
+evaluator[n_NumericArray, o : OptionsPattern[]] := evaluator[<|"Gene" -> n|>, o];
 evaluator[a_Association, o : OptionsPattern[]] := First@evaluator[{a}, o];
 evaluator[list : {(_Association)...}, OptionsPattern[]] := Module[
 	{eval = $LoadNets["Main"], results, info},
@@ -175,8 +175,8 @@ Global`PackNetApplication@With[
 		Method -> f,
 		MetaInformation -> <|
 			Hyperlink -> Hyperlink[
-			"DCGAN-90 trained on Anime", 
-			"https://github.com/GalAster/WolframNeuralNetworks/tree/master/Application/DCGAN-90%20trained%20on%20Anime"
+				"DCGAN-90 trained on Anime",
+				"https://github.com/GalAster/WolframNeuralNetworks/tree/master/Application/DCGAN-90%20trained%20on%20Anime"
 			],
 			Hash -> Hash[f[NetModel], "Expression", "HexString"],
 			$Version -> "NetApplication v1.5.1"
