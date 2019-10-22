@@ -2,6 +2,7 @@
 *.nb
 
 # Model
+*.app
 *.wxf
 *.wmlf
 *.wlnet
