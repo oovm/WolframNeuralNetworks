@@ -1,15 +1,24 @@
 (* ::Package:: *)
 
+(* ::Subchapter:: *)
+(*Import Weights*)
+
+
 Clear["Global`*"];
 SetDirectory@NotebookDirectory[];
-params = Import["Shinkai.h5", "Data"];
+$name = "Hayao";
+params = Import[$name <> ".h5", "Data"];
+
+
+(* ::Subchapter:: *)
+(*Pre-defined Structure*)
 
 
 $NCHW = TransposeLayer[{1<->4, 2<->3, 3<->4}];
 getPad[n_] := PaddingLayer[{{0, 0}, {n, n}, {n, n}}, Padding -> "Reflected"]
-getCN[name_, s_, p_] := ConvolutionLayer[
-	"Weights" -> $NCHW@params[ToString[name] <> "/kernel:0"],
-	"Biases" -> params[ToString[name] <> "/bias:0"],
+getCN[name_, s_, p_, k_ : 1] := ConvolutionLayer[
+	"Weights" -> k * $NCHW@params[ToString[name] <> "/kernel:0"],
+	"Biases" -> k * params[ToString[name] <> "/bias:0"],
 	"Stride" -> s, "PaddingSize" -> p
 ];
 getDN[name_, s_, p_] := DeconvolutionLayer[
@@ -40,6 +49,10 @@ getBlock[i_] := NetFlatten@NetGraph[
 		{NetPort["Input"], 1} -> 2 -> NetPort["Output"]
 	}
 ];
+
+
+(* ::Subchapter:: *)
+(*Main*)
 
 
 mainNet = NetChain[{
@@ -76,15 +89,25 @@ mainNet = NetChain[{
 		getIN["/in_deconv2/in_deconv2"],
 		Ramp
 	},
-	{
-		getPad[3],
-		getCN["/deconv3/deconv3", 1, 0],
-		ElementwiseLayer[(Tanh[#] + 1) / 2&]
-	}
+	getCN["/deconv3/deconv3", 1, 3, 2],
+	LogisticSigmoid
 },
 	"Input" -> "Image",
 	"Output" -> "Image"
 ]
 
 
-Export["CartoonGan trained on Shinkai Style.WLNet", mainNet]
+(* ::Subchapter:: *)
+(*Testing*)
+
+
+img = ImageResize[ExampleData[{"TestImage", "Mandrill"}], 256]
+newNet = NetReplacePart[mainNet, "Input" -> NetEncoder[{"Image", ImageDimensions@img}]];
+newNet[img, TargetDevice -> "GPU"]
+
+
+(* ::Subchapter:: *)
+(*Export Model*)
+
+
+Export["CartoonGAN trained on " <> $name <> " Style.WLNet", mainNet]
