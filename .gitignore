@@ -2,6 +2,7 @@
 *.nb
 
 # Model
+*.mx
 *.app
 *.wxf
 *.wmlf
