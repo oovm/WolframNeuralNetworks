@@ -1,7 +1,9 @@
 
 
+
 ## Naming
 
+![Repo Size](https://img.shields.io/github/repo-size/GalAster/WolframNeuralNetworks.svg)
 
 
 

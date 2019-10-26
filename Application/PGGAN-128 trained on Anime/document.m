@@ -13,7 +13,7 @@ $here = SetDirectory@NotebookDirectory[];
 (*Settings*)
 
 
-$name = "DCGAN-90 trained on Anime";
+$name = "PGGAN-128 trained on Anime";
 theTutorial = Tutorial[$name];
 DocumentationHeader[theTutorial] = {
 	"WaifuZoo",
@@ -118,4 +118,6 @@ NotebookWrite[nb, #]& /@ Map[parseCell, exps]
 
 NotebookWrite[nb, ForScience`PacletUtils`Private`MakeFooter[theTutorial, "Tutorial"]]
 NotebookSave[nb, FileNameJoin[{$here, $name <> ".nb"}]];
+
+
 Export["Preview.png", Rasterize[nb]]

@@ -15,7 +15,7 @@ def = NeuralNetworks`Private`ReadDefinitionFile[file, "NeuralNetworks`"];
 NeuralNetworks`DefineLayer["PixelNorm", def];
 
 
-params = Import@"karras2018iclr-lsun-cat-256x256.wxf";
+params = Import@"karras2018iclr-celebahq-1024x1024.wxf";
 
 
 (* ::Subchapter:: *)
@@ -28,10 +28,6 @@ getCN[name_, p_, s_] := ConvolutionLayer[
 	"Weights" -> $NCHW[Normal@params[name <> "/weight"]] / Sqrt@s,
 	"Biases" -> params[name <> "/bias"],
 	"PaddingSize" -> p, "Stride" -> 1
-];
-getOut[w_, b_] := ConvolutionLayer[
-	"Weights" -> $NCHW[Normal@params["G_paper_1/ToRGB_lod0/weight"]] / Sqrt[64 * w],
-	"Biases" -> Normal@params["G_paper_1/ToRGB_lod0/bias"] + b
 ];
 getBlock[i_, s1_, s2_] := NetChain[{
 	ResizeLayer[Scaled /@ {2, 2}, "Resampling" -> "Nearest"],
@@ -64,6 +60,7 @@ $part2 = NetChain@{
 
 
 mainNet = NetChain[{
+	PixelNormalizationLayer[],
 	$part1,
 	$part2,
 	getBlock[8, 2304, 2304],
@@ -72,7 +69,13 @@ mainNet = NetChain[{
 	getBlock[64, 2304, 1152],
 	getBlock[128, 1152, 576],
 	getBlock[256, 576, 288],
-	getOut[7, 0.3]
+	getBlock[512, 288, 144],
+	getBlock[1024, 144, 72],
+	ConvolutionLayer[
+	"Weights" -> $NCHW[Normal@params["G_paper_1/ToRGB_lod0/weight"]] / Sqrt[16],
+	"Biases" -> Normal@params["G_paper_1/ToRGB_lod0/bias"]
+	],
+	ElementwiseLayer[(Tanh[#]+1)/2&]
 },
 	"Input" -> 512,
 	"Output" -> "Image"
@@ -83,4 +86,4 @@ mainNet = NetChain[{
 (*Save Models*)
 
 
-Export["PGAN-256 trained on Cat.WLNet", mainNet]
+Export["PGAN-1024 trained on CelebaHQ.WLNet", mainNet]
